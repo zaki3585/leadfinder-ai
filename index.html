@@ -1,50 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ResumePro AI</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ResumePro AI - AI Resume & Cover Letter Builder</title>
 <style>
-body{font-family:Arial;max-width:800px;margin:30px auto;padding:20px;background:#f5f5f5}
-.box{background:white;padding:25px;border-radius:12px}
-h1{text-align:center}
-textarea,input{width:100%;box-sizing:border-box;padding:12px;margin:8px 0}
-textarea{height:150px}
-button{padding:12px 18px;border:0;border-radius:6px;cursor:pointer}
-#results{margin-top:20px}
-.section{border:1px solid #ddd;padding:15px;margin-top:15px;border-radius:8px}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(135deg,#0f172a,#172554,#312e81);color:#fff;min-height:100vh}
+.container{max-width:1000px;margin:auto;padding:28px 18px}
+.hero{text-align:center;padding:25px 10px 30px}
+.logo{display:inline-flex;width:58px;height:58px;border-radius:18px;align-items:center;justify-content:center;background:linear-gradient(135deg,#6366f1,#06b6d4);font-size:28px;font-weight:800;box-shadow:0 10px 30px #0005}
+h1{font-size:38px;margin:15px 0 8px}
+.hero p{color:#cbd5e1;font-size:16px;margin:0}
+.badge{display:inline-block;margin-top:15px;padding:7px 13px;border-radius:30px;background:#ffffff12;border:1px solid #ffffff20;color:#a5f3fc;font-size:13px}
+.card{background:#ffffff0d;border:1px solid #ffffff18;border-radius:24px;padding:24px;box-shadow:0 20px 50px #0004;backdrop-filter:blur(15px);margin-bottom:22px}
+label{display:block;font-weight:700;margin:0 0 8px;color:#e2e8f0}
+input,textarea{width:100%;border:1px solid #ffffff20;background:#020617aa;color:#fff;border-radius:14px;padding:14px;font-size:15px;outline:none;margin-bottom:18px}
+input:focus,textarea:focus{border-color:#818cf8;box-shadow:0 0 0 3px #6366f122}
+textarea{min-height:125px;resize:vertical}
+button{border:0;border-radius:14px;padding:14px 20px;font-size:16px;font-weight:800;cursor:pointer}
+.generate{width:100%;background:linear-gradient(135deg,#6366f1,#06b6d4);color:#fff;box-shadow:0 10px 25px #06b6d433}
+.generate:hover{transform:translateY(-1px)}
+#status{text-align:center;color:#a5f3fc;margin:16px 0;display:none}
+.results{display:none}
+.result-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+h2{margin:0 0 15px;font-size:23px}
+.output{background:#fff;color:#172033;border-radius:18px;padding:25px;white-space:pre-wrap;line-height:1.7;font-size:14px;min-height:180px}
+.download{background:#172033;color:#fff;margin:15px 0 25px}
+.cover{margin-top:25px}
+.footer{text-align:center;color:#94a3b8;font-size:13px;padding:20px}
+@media(max-width:600px){h1{font-size:30px}.card{padding:17px;border-radius:19px}.container{padding:18px 12px}.output{padding:18px;font-size:13px}}
+@media print{
+body{background:#fff;color:#111}.hero,.form-card,.footer,.download,#status{display:none!important}
+.container{max-width:none;padding:0}.results{display:block!important}.card{border:0;box-shadow:none;background:#fff;padding:0}.output{box-shadow:none;border:0;padding:0;color:#111}
+}
 </style>
 </head>
 <body>
-
-<div class="box">
+<div class="container">
+<section class="hero">
+<div class="logo">R</div>
 <h1>ResumePro AI</h1>
-<p>Create an AI-powered resume and cover letter.</p>
+<p>Create a professional, ATS-friendly resume & tailored cover letter in seconds.</p>
+<div class="badge">✦ Powered by AI • Professional • ATS Friendly</div>
+</section>
 
-<input id="name" placeholder="Your name">
+<div class="card form-card">
+<label>Your Name</label>
+<input id="name" placeholder="e.g. Zaki Ahmad">
 
-<textarea id="details" placeholder="Enter your skills, experience, education and other details..."></textarea>
+<label>Skills, Experience & Education</label>
+<textarea id="details" placeholder="Enter your skills, experience, education, certifications and other details..."></textarea>
 
+<label>Job Description</label>
 <textarea id="job" placeholder="Paste the job description here..."></textarea>
 
-<button onclick="generate()">Generate Resume</button>
+<button class="generate" onclick="generateResume()">✨ Generate Professional Resume</button>
+<div id="status">✨ Creating your professional resume...</div>
+</div>
 
-<div id="results"></div>
+<div id="results" class="results">
+<div class="card">
+<div class="result-head"><h2>📄 Professional Resume</h2></div>
+<button class="download" onclick="window.print()">⬇ Download PDF</button>
+<div id="resume" class="output"></div>
+
+<div class="cover">
+<h2>✉️ Tailored Cover Letter</h2>
+<div id="coverLetter" class="output"></div>
+</div>
+</div>
+</div>
+
+<div class="footer">ResumePro AI • Build your career with confidence</div>
 </div>
 
 <script>
-async function generate(){
+async function generateResume(){
 const name=document.getElementById("name").value.trim();
 const details=document.getElementById("details").value.trim();
 const job=document.getElementById("job").value.trim();
+const status=document.getElementById("status");
 const results=document.getElementById("results");
 
-if(!details||!job){
-results.innerHTML="<p>Please enter your details and job description.</p>";
-return;
-}
+if(!details||!job){alert("Please enter your skills/details and job description.");return}
 
-results.innerHTML="<p>Generating...</p>";
+status.style.display="block";
+results.style.display="none";
 
 try{
 const response=await fetch("/generate-resume",{
@@ -52,30 +94,18 @@ method:"POST",
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify({name,details,job})
 });
-
 const data=await response.json();
-
-if(!data.success){
-results.innerHTML="<p>Error: "+data.error+"</p>";
-return;
-}
-
-results.innerHTML=`
-<div class="section">
-<button onclick="window.print()">Download PDF</button><h2>Resume</h2>
-<pre style="white-space:pre-wrap">${data.resume}</pre>
-</div>
-<div class="section">
-<h2>Cover Letter</h2>
-<pre style="white-space:pre-wrap">${data.coverLetter}</pre>
-</div>
-`;
-
-}catch(error){
-results.innerHTML="<p>Connection error: "+error.message+"</p>";
+if(!response.ok||!data.resume)throw new Error(data.error||"Something went wrong");
+document.getElementById("resume").textContent=data.resume;
+document.getElementById("coverLetter").textContent=data.coverLetter||"";
+results.style.display="block";
+results.scrollIntoView({behavior:"smooth"});
+}catch(e){
+alert("Unable to generate resume: "+e.message);
+}finally{
+status.style.display="none";
 }
 }
 </script>
-
 </body>
 </html>
