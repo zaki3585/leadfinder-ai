@@ -17,7 +17,21 @@ app.post("/generate-resume", async (req, res) => {
 
     let response; for (let i = 0; i < 3; i++) { try { response = await ai.models.generateContent({
       model: "gemini-3.7-flash",
-      contents: `Create a professional ATS-friendly resume and tailored cover letter.
+      contents: `Create a premium, recruiter-friendly, ATS-optimized resume and tailored cover letter.
+
+The resume must be clean, modern, concise, achievement-focused, and highly relevant to the provided job description. Use strong professional wording and naturally incorporate relevant keywords from the job description.
+
+IMPORTANT:
+- Never invent employers, job titles, dates, degrees, certifications, skills, achievements, numbers, or experience.
+- Only use facts provided by the candidate.
+- Do not add fake metrics or claims.
+- Prioritize the most relevant skills for the target job.
+- Keep the resume easy for both ATS systems and human recruiters to scan.
+- Use clear sections: Professional Summary, Core Skills, Professional Experience, Education, Certifications, Projects, or other sections only when information is actually provided.
+- Do not create empty sections.
+- Keep the resume concise and professional.
+- Write a polished cover letter specifically tailored to the job description.
+- Return clean plain text inside the JSON values; do not use Markdown code fences or extra commentary.
 
 Name: ${name || "Candidate"}
 
