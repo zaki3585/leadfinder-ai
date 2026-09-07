@@ -15,23 +15,16 @@ app.post("/generate-resume", async (req, res) => {
     const { name, details, job } = req.body;
     if (!details || !job) return res.status(400).json({success:false,error:"Details and job description are required"});
 
-    let response; for (let i = 0; i < 3; i++) { try { response = await ai.models.generateContent({
-      model: i === 0 ? "gemini-3.8-flash" : i === 1 ? "gemini-3.5-flash" : "gemini-flash-latest",
-      contents: `Create a premium, recruiter-friendly, ATS-optimized resume and tailored cover letter.
+    let response;
+    const models = ["gemini-3.8-flash", "gemini-3.5-flash", "gemini-flash-latest"];
+    let lastError;
 
-The resume must be clean, modern, concise, achievement-focused, and highly relevant to the provided job description. Use strong professional wording and naturally incorporate relevant keywords from the job description.
-
-IMPORTANT:
-- Never invent employers, job titles, dates, degrees, certifications, skills, achievements, numbers, or experience.
-- Only use facts provided by the candidate.
-- Do not add fake metrics or claims.
-- Prioritize the most relevant skills for the target job.
-- Keep the resume easy for both ATS systems and human recruiters to scan.
-- Use clear sections: Professional Summary, Core Skills, Professional Experience, Education, Certifications, Projects, or other sections only when information is actually provided.
-- Do not create empty sections.
-- Keep the resume concise and professional.
-- Write a polished cover letter specifically tailored to the job description.
-- Return clean plain text inside the JSON values; do not use Markdown code fences or extra commentary.
+    for (const model of models) {
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          response = await ai.models.generateContent({
+            model,
+            contents: `Create a premium, recruiter-friendly, ATS-optimized resume and tailored cover letter.
 
 Name: ${name || "Candidate"}
 
@@ -41,11 +34,27 @@ ${details}
 Job description:
 ${job}
 
-Return ONLY valid JSON:
-{"resume":"resume text","coverLetter":"cover letter text"}
+Rules:
+- Never invent employers, dates, degrees, certifications, skills, achievements or experience.
+- Use only information supplied by the candidate.
+- Naturally prioritize relevant job-description keywords.
+- Make the resume concise, professional and easy for ATS and recruiters to scan.
+- Use clear sections and do not create empty sections.
+- Write a polished job-specific cover letter.
+- Return ONLY valid JSON:
+{"resume":"resume text","coverLetter":"cover letter text"}` 
+          });
+          break;
+        } catch (e) {
+          lastError = e;
+          const wait = Math.min(30000, 2000 * Math.pow(2, attempt)) + Math.floor(Math.random() * 1000);
+          if (attempt < 2) await new Promise(r => setTimeout(r, wait));
+        }
+      }
+      if (response) break;
+    }
 
-Do not invent facts, jobs, education, skills or achievements.`
-    }); break; } catch (e) { if (i === 2) throw e; await new Promise(r => setTimeout(r, 3000)); } }
+    if (!response) throw lastError || new Error("All AI models are temporarily unavailable");
 
     let text = response.text.trim();
     text = text.replace(/^```json\s*/i, "");
