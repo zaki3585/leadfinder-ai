@@ -15,7 +15,7 @@ app.post("/generate-resume", async (req, res) => {
     const { name, details, job } = req.body;
     if (!details || !job) return res.status(400).json({success:false,error:"Details and job description are required"});
 
-    const response = await ai.models.generateContent({
+    let response; for (let i = 0; i < 3; i++) { try { response = await ai.models.generateContent({
       model: "gemini-3.6-flash",
       contents: `Create a professional ATS-friendly resume and tailored cover letter.
 
@@ -31,7 +31,7 @@ Return ONLY valid JSON:
 {"resume":"resume text","coverLetter":"cover letter text"}
 
 Do not invent facts, jobs, education, skills or achievements.`
-    });
+    }); break; } catch (e) { if (i === 2) throw e; await new Promise(r => setTimeout(r, 3000)); } }
 
     let text = response.text.trim();
     text = text.replace(/^```json\s*/i, "");
