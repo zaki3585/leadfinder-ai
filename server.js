@@ -16,7 +16,7 @@ app.post("/generate-resume", async (req, res) => {
     if (!details || !job) return res.status(400).json({success:false,error:"Details and job description are required"});
 
     let response; for (let i = 0; i < 3; i++) { try { response = await ai.models.generateContent({
-      model: "gemini-3.7-flash",
+      model: "gemini-3.8-flash",
       contents: `Create a premium, recruiter-friendly, ATS-optimized resume and tailored cover letter.
 
 The resume must be clean, modern, concise, achievement-focused, and highly relevant to the provided job description. Use strong professional wording and naturally incorporate relevant keywords from the job description.
