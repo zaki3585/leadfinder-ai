@@ -3,47 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LeadFinder AI</title>
+<title>ResumePro AI</title>
 <style>
-body{font-family:Arial;max-width:800px;margin:30px auto;padding:20px}
+body{font-family:Arial;max-width:800px;margin:30px auto;padding:20px;background:#f5f5f5}
+.box{background:white;padding:25px;border-radius:12px}
 h1{text-align:center}
-input{width:65%;padding:12px}
-button{padding:12px 16px;cursor:pointer}
-.lead{border:1px solid #ddd;padding:15px;margin:12px 0;border-radius:8px}
-.copy{margin-top:8px}
-.export{margin:15px 0}
+textarea,input{width:100%;box-sizing:border-box;padding:12px;margin:8px 0}
+textarea{height:150px}
+button{padding:12px 18px;border:0;border-radius:6px;cursor:pointer}
+#results{margin-top:20px}
+.section{border:1px solid #ddd;padding:15px;margin-top:15px;border-radius:8px}
 </style>
 </head>
 <body>
 
-<h1>LeadFinder AI</h1>
+<div class="box">
+<h1>ResumePro AI</h1>
+<p>Create an AI-powered resume and cover letter.</p>
 
-<input id="query" placeholder="e.g. Dentist in New York">
-<button onclick="searchLeads()">Search</button>
+<input id="name" placeholder="Your name">
 
-<div class="export">
-<button onclick="exportCSV()">Export CSV</button>
-</div>
+<textarea id="details" placeholder="Enter your skills, experience, education and other details..."></textarea>
+
+<textarea id="job" placeholder="Paste the job description here..."></textarea>
+
+<button onclick="generate()">Generate Resume</button>
 
 <div id="results"></div>
+</div>
 
 <script>
-async function searchLeads(){
-const query=document.getElementById("query").value.trim();
+async function generate(){
+const name=document.getElementById("name").value.trim();
+const details=document.getElementById("details").value.trim();
+const job=document.getElementById("job").value.trim();
 const results=document.getElementById("results");
 
-if(!query){
-results.innerHTML="<p>Please enter a search query.</p>";
+if(!details||!job){
+results.innerHTML="<p>Please enter your details and job description.</p>";
 return;
 }
 
-results.innerHTML="<p>Searching...</p>";
+results.innerHTML="<p>Generating...</p>";
 
 try{
-const response=await fetch("/search-leads",{
+const response=await fetch("/generate-resume",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
-body:JSON.stringify({query})
+body:JSON.stringify({name,details,job})
 });
 
 const data=await response.json();
@@ -53,78 +60,22 @@ results.innerHTML="<p>Error: "+data.error+"</p>";
 return;
 }
 
-window.currentLeads=data.leads;
-
-results.innerHTML=data.leads.map((lead,index)=>`
-<div class="lead">
-<h3>${lead.name||"Unknown"}</h3>
-<p><b>Category:</b> ${lead.category||"N/A"}</p>
-<p><b>Address:</b> ${lead.address||"N/A"}</p>
-<p><b>Phone:</b> ${lead.phone||"N/A"}</p>
-<p><b>Website:</b> ${lead.website||"N/A"}</p>
-<button class="copy" onclick="copyLead(${index})">Copy Lead</button>
+results.innerHTML=`
+<div class="section">
+<h2>Resume</h2>
+<pre style="white-space:pre-wrap">${data.resume}</pre>
 </div>
-`).join("");
+<div class="section">
+<h2>Cover Letter</h2>
+<pre style="white-space:pre-wrap">${data.coverLetter}</pre>
+</div>
+`;
 
 }catch(error){
 results.innerHTML="<p>Connection error: "+error.message+"</p>";
 }
 }
-
-function copyLead(index){
-const lead=window.currentLeads[index];
-
-const text=
-"Name: "+(lead.name||"N/A")+"\n"+
-"Category: "+(lead.category||"N/A")+"\n"+
-"Address: "+(lead.address||"N/A")+"\n"+
-"Phone: "+(lead.phone||"N/A")+"\n"+
-"Website: "+(lead.website||"N/A");
-
-navigator.clipboard.writeText(text).then(()=>{
-alert("Lead copied!");
-});
-}
-
-function exportCSV(){
-const leads=window.currentLeads;
-
-if(!leads||leads.length===0){
-alert("Search leads first!");
-return;
-}
-
-const header="Name,Category,Address,Phone,Website\n";
-
-const rows=leads.map(lead=>{
-return [
-lead.name||"",
-lead.category||"",
-lead.address||"",
-lead.phone||"",
-lead.website||""
-].map(value=>`"${String(value).replace(/"/g,'""')}"`).join(",");
-}).join("\n");
-
-const blob=new Blob([header+rows],{type:"text/csv"});
-const url=URL.createObjectURL(blob);
-
-const a=document.createElement("a");
-a.href=url;
-a.download="leadfinder-leads.csv";
-a.click();
-
-URL.revokeObjectURL(url);
-}
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
