@@ -37,9 +37,16 @@ ${job}
 Rules:
 - Never invent employers, dates, degrees, certifications, skills, achievements or experience.
 - Use only information supplied by the candidate.
-- Naturally prioritize relevant job-description keywords.
+- Never claim "extensive experience", "proven track record", "expert", "years of experience", or specific achievements unless explicitly supported by the candidate details.
+- Naturally prioritize relevant job-description keywords without keyword stuffing.
 - Make the resume concise, professional and easy for ATS and recruiters to scan.
 - Use clear sections and do not create empty sections.
+- Keep spacing between words and sentences correct.
+- Use consistent capitalization: AI, SEO, WordPress, ChatGPT, Canva, Google Sheets.
+- Avoid spelling mistakes, broken words, duplicated words, and awkward phrases.
+- Do not use Markdown tables, emojis, decorative symbols, or excessive formatting.
+- For missing experience or education, do not invent content.
+- Prefer strong, truthful wording over exaggerated claims.
 - Write a polished job-specific cover letter.
 - Return ONLY valid JSON:
 {"resume":"resume text","coverLetter":"cover letter text"}` 
