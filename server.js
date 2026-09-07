@@ -16,7 +16,7 @@ app.post("/generate-resume", async (req, res) => {
     if (!details || !job) return res.status(400).json({success:false,error:"Details and job description are required"});
 
     let response; for (let i = 0; i < 3; i++) { try { response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: "gemini-3.7-flash",
       contents: `Create a professional ATS-friendly resume and tailored cover letter.
 
 Name: ${name || "Candidate"}
