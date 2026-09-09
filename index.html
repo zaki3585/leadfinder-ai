@@ -44,11 +44,14 @@ textarea{min-height:120px;resize:vertical}
 .resume.executive h2{text-transform:uppercase;letter-spacing:1px}
 
 /* PRINT */
-@media print{
-body{background:white}
-body>*:not(.print-area){display:none!important}
-.print-area{display:block!important}
-.resume{box-shadow:none!important;border-radius:0!important}
+@media print {
+  body { background: white !important; }
+  body > * { display: none !important; }
+  .container { display: block !important; max-width: none !important; padding: 0 !important; }
+  .card, #status, .subtitle, h1, .download { display: none !important; }
+  #results { display: block !important; }
+  .print-area { display: block !important; }
+  .resume, .cover { display: block !important; box-shadow: none !important; border-radius: 0 !important; }
 }
 </style>
 
