@@ -97,9 +97,9 @@ Rules:
 - Never claim "extensive experience", "proven track record", "expert", "years of experience", or specific achievements unless explicitly supported by the candidate details.
 - Naturally prioritize relevant job-description keywords without keyword stuffing.
 - Make the resume concise, professional and easy for ATS and recruiters to scan.
-- Use clear sections and do not create empty sections.
-- Keep spacing between words and sentences correct.
-- Use consistent capitalization: AI, SEO, WordPress, ChatGPT, Canva, Google Sheets.
+- Format the resume as a professional corporate resume, not a paragraph.
+- Use clear section headings such as PROFESSIONAL SUMMARY, AREAS OF EXPERTISE, PROFESSIONAL EXPERIENCE, EDUCATION, and TOOLS & SKILLS.
+- Use concise bullet points for skills, responsibilities, and achievements where supported by the provided information.
 - Avoid spelling mistakes, broken words, duplicated words, and awkward phrases.
 - Do not use Markdown tables, emojis, decorative symbols, or excessive formatting.
 - For missing experience or education, do not invent content.
