@@ -151,7 +151,7 @@ throw new Error(data.error || "Something went wrong");
 
 const resume=document.getElementById("resume");
 
-resume.textContent=data.resume;
+resume.innerHTML=formatResume(data.resume);
 
 resume.className="resume "+template;
 
@@ -175,6 +175,30 @@ button.disabled=false;
 
 }
 
+}
+
+function formatResume(text){
+  const sections=["PROFESSIONAL SUMMARY","AREAS OF EXPERTISE","PROFESSIONAL EXPERIENCE","EDUCATION","TOOLS & SKILLS","PROFESSIONAL CAPABILITIES"];
+  let html="";
+  const lines=text.split(/\r?\n/);
+  let current="";
+  for(const raw of lines){
+    const line=raw.trim();
+    if(!line) continue;
+    const heading=sections.find(x=>line.toUpperCase().replace(/[:#*]/g,"").trim()===x);
+    if(heading){
+      current=heading;
+      html+=`<section><h2>${heading}</h2>`;
+      continue;
+    }
+    if(line.startsWith("-") || line.startsWith("•") || line.startsWith("*")){
+      html+=`<li>${line.replace(/^[-•*]\s*/,"")}</li>`;
+    }else{
+      html+=`<p>${line}</p>`;
+    }
+  }
+  html=html.replace(/(<li>.*?<\/li>)+/gs,m=>`<ul>${m}</ul>`);
+  return html.replace(/<\/section>$/,"")+"</section>";
 }
 
 function downloadPDF(){
