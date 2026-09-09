@@ -1,8 +1,11 @@
+const crypto = require("crypto");
+const Razorpay = require("razorpay");
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 const { GoogleGenAI } = require("@google/genai");
 
+const razorpay = new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET });
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -10,9 +13,62 @@ app.use(express.static("."));
 
 const ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY});
 
+app.post("/api/create-order", async (req, res) => {
+  try {
+    const amount = 99 * 100;
+    const order = await razorpay.orders.create({
+      amount,
+      currency: "INR",
+      receipt: "resume_" + Date.now()
+    });
+
+    res.json({ success: true, order });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+app.post("/api/verify-payment", (req, res) => {
+  try {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        error: "Payment details are required"
+      });
+    }
+
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(razorpay_order_id + "|" + razorpay_payment_id)
+      .digest("hex");
+
+    if (expectedSignature !== razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid payment signature"
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Payment verified successfully"
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 app.post("/generate-resume", async (req, res) => {
   try {
-    const { name, details, job } = req.body;
+  const { name, details, job, template } = req.body;
     if (!details || !job) return res.status(400).json({success:false,error:"Details and job description are required"});
 
     let response;
@@ -29,6 +85,7 @@ app.post("/generate-resume", async (req, res) => {
 Name: ${name || "Candidate"}
 
 Candidate details:
+Selected resume template: ${template || "modern"}
 ${details}
 
 Job description:

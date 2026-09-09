@@ -35,7 +35,7 @@ body{background:#fff;color:#111}.hero,.form-card,.footer,.download,#status{displ
 .container{max-width:none;padding:0}.results{display:block!important}.card{border:0;box-shadow:none;background:#fff;padding:0}.output{box-shadow:none;border:0;padding:0;color:#111}
 }
 .hero h1{letter-spacing:-1px}.hero:after{content:"Trusted-style resume structure • Clean • Modern • ATS ready";display:block;color:#94a3b8;font-size:12px;margin-top:18px}.output{font-family:Arial,sans-serif}.footer{line-height:1.8}</style>
-</head>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script></head>
 <body>
 <div class="container">
 <section class="hero">
@@ -54,6 +54,17 @@ body{background:#fff;color:#111}.hero,.form-card,.footer,.download,#status{displ
 
 <label>Job Description</label>
 <textarea id="job" placeholder="Paste the job description here..."></textarea>
+
+<div class="template-box">
+  <label for="template">Choose Resume Template</label>
+  <select id="template">
+    <option value="modern">Modern</option>
+    <option value="professional">Professional</option>
+    <option value="minimal">Minimal</option>
+    <option value="creative">Creative</option>
+    <option value="executive">Executive</option>
+  </select>
+</div>
 
 <button class="generate" onclick="generateResume()">✨ Create My Professional Resume</button>
 <div id="status">✨ Creating your professional resume...</div>
@@ -80,6 +91,7 @@ async function generateResume(){
 const name=document.getElementById("name").value.trim();
 const details=document.getElementById("details").value.trim();
 const job=document.getElementById("job").value.trim();
+const template=document.getElementById("template").value;
 const status=document.getElementById("status");
 const results=document.getElementById("results");
 
@@ -92,7 +104,7 @@ try{
 const response=await fetch("/generate-resume",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
-body:JSON.stringify({name,details,job})
+      body: JSON.stringify({name, details, job, template})
 });
 const data=await response.json();
 if(!response.ok||!data.resume)throw new Error(data.error||"Something went wrong");
