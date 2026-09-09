@@ -45,6 +45,8 @@ textarea{min-height:120px;resize:vertical}
 
 /* PRINT */
 @media print {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
   body { background: white !important; }
   body > * { display: none !important; }
   .container { display: block !important; max-width: none !important; padding: 0 !important; }
