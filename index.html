@@ -2,122 +2,188 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ResumePro AI - AI Resume & Cover Letter Builder</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ResumePro AI</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(135deg,#0f172a,#172554,#312e81);color:#fff;min-height:100vh}
-.container{max-width:1000px;margin:auto;padding:28px 18px}
-.hero{text-align:center;padding:25px 10px 30px}
-.logo{display:inline-flex;width:58px;height:58px;border-radius:18px;align-items:center;justify-content:center;background:linear-gradient(135deg,#6366f1,#06b6d4);font-size:28px;font-weight:800;box-shadow:0 10px 30px #0005}
-h1{font-size:38px;margin:15px 0 8px}
-.hero p{color:#cbd5e1;font-size:16px;margin:0}
-.badge{display:inline-block;margin-top:15px;padding:7px 13px;border-radius:30px;background:#ffffff12;border:1px solid #ffffff20;color:#a5f3fc;font-size:13px}
-.card{background:#ffffff0d;border:1px solid #ffffff18;border-radius:24px;padding:24px;box-shadow:0 20px 50px #0004;backdrop-filter:blur(15px);margin-bottom:22px}
-label{display:block;font-weight:700;margin:0 0 8px;color:#e2e8f0}
-input,textarea{width:100%;border:1px solid #ffffff20;background:#020617aa;color:#fff;border-radius:14px;padding:14px;font-size:15px;outline:none;margin-bottom:18px}
-input:focus,textarea:focus{border-color:#818cf8;box-shadow:0 0 0 3px #6366f122}
-textarea{min-height:125px;resize:vertical}
-button{border:0;border-radius:14px;padding:14px 20px;font-size:16px;font-weight:800;cursor:pointer}
-.generate{width:100%;background:linear-gradient(135deg,#6366f1,#06b6d4);color:#fff;box-shadow:0 10px 25px #06b6d433}
-.generate:hover{transform:translateY(-1px)}
-#status{text-align:center;color:#a5f3fc;margin:16px 0;display:none}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#222}
+.container{max-width:900px;margin:auto;padding:25px}
+h1{text-align:center;margin-bottom:5px}
+.subtitle{text-align:center;color:#666;margin-bottom:25px}
+.card{background:white;padding:25px;border-radius:14px;box-shadow:0 4px 18px #0001;margin-bottom:20px}
+label{display:block;font-weight:bold;margin:14px 0 7px}
+input,textarea,select{width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:15px}
+textarea{min-height:120px;resize:vertical}
+.generate{width:100%;padding:14px;border:0;border-radius:8px;background:#111;color:white;font-size:16px;font-weight:bold;margin-top:20px}
+.generate:disabled{opacity:.6}
+#status{text-align:center;display:none;margin:15px}
 .results{display:none}
-.result-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-h2{margin:0 0 15px;font-size:23px}
-.output{background:#fff;color:#172033;border-radius:18px;padding:25px;white-space:pre-wrap;line-height:1.7;font-size:14px;min-height:180px}
-.download{background:#172033;color:#fff;margin:15px 0 25px}
-.cover{margin-top:25px}
-.footer{text-align:center;color:#94a3b8;font-size:13px;padding:20px}
-@media(max-width:600px){h1{font-size:30px}.card{padding:17px;border-radius:19px}.container{padding:18px 12px}.output{padding:18px;font-size:13px}}
+.resume{background:white;padding:35px;min-height:700px}
+.cover{background:white;padding:25px;margin-top:20px}
+.download{padding:12px 18px;border:0;border-radius:8px;background:#111;color:white;margin-bottom:15px}
+
+/* MODERN */
+.resume.modern{border-top:8px solid #2563eb}
+.resume.modern h2{color:#2563eb}
+
+/* PROFESSIONAL */
+.resume.professional{border-left:8px solid #333}
+.resume.professional h2{border-bottom:2px solid #333;padding-bottom:8px}
+
+/* MINIMAL */
+.resume.minimal{border:1px solid #ddd}
+.resume.minimal h2{font-weight:normal;letter-spacing:2px}
+
+/* CREATIVE */
+.resume.creative{border-top:8px solid #9333ea;border-radius:12px}
+.resume.creative h2{color:#9333ea}
+
+/* EXECUTIVE */
+.resume.executive{border-top:10px double #111}
+.resume.executive h2{text-transform:uppercase;letter-spacing:1px}
+
+/* PRINT */
 @media print{
-body{background:#fff;color:#111}.hero,.form-card,.footer,.download,#status{display:none!important}
-.container{max-width:none;padding:0}.results{display:block!important}.card{border:0;box-shadow:none;background:#fff;padding:0}.output{box-shadow:none;border:0;padding:0;color:#111}
+body{background:white}
+body>*:not(.print-area){display:none!important}
+.print-area{display:block!important}
+.resume{box-shadow:none!important;border-radius:0!important}
 }
-.hero h1{letter-spacing:-1px}.hero:after{content:"Trusted-style resume structure • Clean • Modern • ATS ready";display:block;color:#94a3b8;font-size:12px;margin-top:18px}.output{font-family:Arial,sans-serif}.footer{line-height:1.8}</style>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script></head>
+</style>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+
 <body>
+
 <div class="container">
-<section class="hero">
-<div class="logo">RP</div>
-<h1>Build a Resume That Gets Noticed</h1>
-<p>Create a premium, ATS-friendly resume and tailored cover letter designed for modern recruiters.</p>
-<div class="badge">✦ AI-Powered &nbsp; • &nbsp; ATS-Friendly &nbsp; • &nbsp; Recruiter-Ready</div>
-</section>
 
-<div class="card form-card">
-<label>Your Name</label>
-<input id="name" placeholder="e.g. Zaki Ahmad">
+<h1>ResumePro AI</h1>
+<p class="subtitle">Professional resumes. Smarter job applications.</p>
 
-<label>Skills, Experience & Education</label>
-<textarea id="details" placeholder="Enter your skills, experience, education, certifications and other details..."></textarea>
+<div class="card">
+<label for="name">Full Name</label>
+<input id="name" placeholder="Enter your name">
 
-<label>Job Description</label>
-<textarea id="job" placeholder="Paste the job description here..."></textarea>
+<label for="details">Skills, Experience & Education</label>
+<textarea id="details" placeholder="Enter your skills, experience, education and other details"></textarea>
 
-<div class="template-box">
-  <label for="template">Choose Resume Template</label>
-  <select id="template">
-    <option value="modern">Modern</option>
-    <option value="professional">Professional</option>
-    <option value="minimal">Minimal</option>
-    <option value="creative">Creative</option>
-    <option value="executive">Executive</option>
-  </select>
-</div>
+<label for="job">Job Description</label>
+<textarea id="job" placeholder="Paste the job description here"></textarea>
 
-<button class="generate" onclick="generateResume()">✨ Create My Professional Resume</button>
-<div id="status">✨ Creating your professional resume...</div>
+<label for="template">Choose Resume Template</label>
+<select id="template">
+<option value="modern">Modern</option>
+<option value="professional">Professional</option>
+<option value="minimal">Minimal</option>
+<option value="creative">Creative</option>
+<option value="executive">Executive</option>
+</select>
+
+<button class="generate" id="generateBtn" onclick="generateResume()">
+Create My Professional Resume
+</button>
+
+<div id="status">⏳ Creating your professional resume...</div>
 </div>
 
 <div id="results" class="results">
-<div class="card">
-<div class="result-head"><h2>📄 Professional Resume</h2></div>
-<button class="download" onclick="window.print()">⬇ Download PDF</button>
-<div id="resume" class="output"></div>
+
+<button class="download" onclick="downloadPDF()">⬇ Download PDF</button>
+
+<div id="printArea" class="print-area">
+
+<div id="resume" class="resume modern"></div>
 
 <div class="cover">
 <h2>✉️ Tailored Cover Letter</h2>
-<div id="coverLetter" class="output"></div>
+<div id="coverLetter"></div>
 </div>
+
 </div>
 </div>
 
-<div class="footer"><b>ResumePro AI</b><br>Professional resumes. Smarter job applications.<br>Built for modern job seekers.</div>
 </div>
 
 <script>
+
 async function generateResume(){
+
 const name=document.getElementById("name").value.trim();
 const details=document.getElementById("details").value.trim();
 const job=document.getElementById("job").value.trim();
 const template=document.getElementById("template").value;
+
 const status=document.getElementById("status");
 const results=document.getElementById("results");
+const button=document.getElementById("generateBtn");
 
-if(!details||!job){alert("Please enter your skills/details and job description.");return}
+if(!details || !job){
+alert("Please enter your skills/experience/education and job description.");
+return;
+}
 
 status.style.display="block";
 results.style.display="none";
+button.disabled=true;
 
 try{
+
 const response=await fetch("/generate-resume",{
 method:"POST",
-headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({name, details, job, template})
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+name,
+details,
+job,
+template
+})
 });
+
 const data=await response.json();
-if(!response.ok||!data.resume)throw new Error(data.error||"Something went wrong");
-document.getElementById("resume").textContent=data.resume;
-document.getElementById("coverLetter").textContent=data.coverLetter||"";
+
+if(!response.ok || !data.resume){
+throw new Error(data.error || "Something went wrong");
+}
+
+const resume=document.getElementById("resume");
+
+resume.textContent=data.resume;
+
+resume.className="resume "+template;
+
+document.getElementById("coverLetter").textContent=
+data.coverLetter || "";
+
 results.style.display="block";
-results.scrollIntoView({behavior:"smooth"});
+
+results.scrollIntoView({
+behavior:"smooth"
+});
+
 }catch(e){
+
 alert("Unable to generate resume: "+e.message);
+
 }finally{
+
 status.style.display="none";
+button.disabled=false;
+
 }
+
 }
+
+function downloadPDF(){
+
+window.print();
+
+}
+
 </script>
+
 </body>
 </html>
